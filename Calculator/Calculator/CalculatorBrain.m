@@ -29,6 +29,24 @@
     return [self.programStack copy];
 }
 
++ (BOOL)isTwoOperandOperation:(NSString *)operation {
+    return [[NSSet setWithObjects:@"+",@"*",@"-",@"/",nil] containsObject:operation];
+}
+
++ (BOOL)isOneOperandOperation:(NSString *)operation {
+    return [[NSSet setWithObjects:@"sin",@"cos",@"sqrt",nil] containsObject: operation];
+}
+
++ (BOOL)isNoOperandOperation:(NSString *)operation {
+    return [[NSSet setWithObjects:@"π",nil] containsObject: operation];
+}
+
++ (BOOL)isValidOperation:(NSString *)operation {
+    return [self isTwoOperandOperation:operation] ||
+            [self isOneOperandOperation:operation] ||
+            [self isNoOperandOperation:operation];
+}
+
 + (NSString *)descriptionOfProgram:(id)program {
     return @"Implement this in Homework #2";
 }
@@ -37,6 +55,13 @@
 - (void)pushOperand:(double)operand {
     NSNumber *operandObject = [NSNumber numberWithDouble:operand];
     [self.programStack addObject:operandObject];
+}
+
+- (void)pushVariable:(NSString *)var {
+    //reject variables that are names of operations
+    if (![[self class] isValidOperation: var]) {
+        [self.programStack addObject:var];
+    }
 }
 
 - (double)performOperation:(NSString *)operation {
