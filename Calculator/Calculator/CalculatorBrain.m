@@ -101,18 +101,62 @@
             result = sqrt([self popOperandOffProgramStack:stack]);
         } else if ([operation isEqualToString:@"π"]) {
             result = M_PI;
-        }
+        } 
     }
 
     return result;
 }
 
-+ (double)runProgram:(id)program {
++ (BOOL)isVariable:(id)item {
+    //anything of type number is not a var
+    if ([item isKindOfClass:[NSNumber class]]) return NO;
+
+    //type string, if it is not a operation, then it must be a var
+    if ([item isKindOfClass: [NSString class]]) {
+        return ![self isValidOperation:item];
+    }
+
+    //unknown type, not a var
+    return NO;
+}
+
+
++ (NSSet *)variablesUsedInProgram:(id)program {
+    //check to see if program is an array (our stack)
     NSMutableArray *stack;
     if ([program isKindOfClass:[NSArray class]]) {
         stack = [program mutableCopy];
     }
+    
+    NSMutableSet *variables;   //return nil if no variables
+    //iterate through array - 
+    //so add it to the set we will return
+    for (id current in stack) {
+        if ([self isVariable:current]) {        
+            if (!variables) variables = [NSMutableSet set];  //create set if still nil
+            [variables addObject:current];
+        }
+    }
+    
+    //return an immuatable copy
+    return [NSSet setWithSet:variables];
+}
+
++ (double)runProgram:(id)program usingVariables:(NSDictionary *)variableValues {
+    NSMutableArray *stack;
+    if ([program isKindOfClass:[NSArray class]]) {
+        stack = [program mutableCopy];
+    }
+    //iterate through each variable in program and look for a replacement
+    //in the passed in dict.   Use 0 if nothing found.
+    
     return [self popOperandOffProgramStack:stack];
+}
+
+
++ (double)runProgram:(id)program {
+    //call runProgram above with an empty dict with no variables
+    return [self runProgram:program usingVariables:[NSDictionary dictionary]]; 
 }
 
 - (void)clearMemory {
