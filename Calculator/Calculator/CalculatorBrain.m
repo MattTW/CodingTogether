@@ -19,9 +19,7 @@
 @synthesize programStack = _programStack;
 
 - (NSMutableArray *)programStack {
-    if (!_programStack) {
-        _programStack = [[NSMutableArray alloc] init];
-    }
+    if (!_programStack) _programStack = [[NSMutableArray alloc] init];
     return _programStack;
 }
 
@@ -149,6 +147,14 @@
     }
     //iterate through each variable in program and look for a replacement
     //in the passed in dict.   Use 0 if nothing found.
+    for (int i=0; i < stack.count; i++) {
+        id currentItem = [stack objectAtIndex:i];
+        if ([self isVariable:currentItem]) {
+            NSNumber *replacementValue = [variableValues objectForKey:currentItem];
+            if (!replacementValue) replacementValue = [NSNumber numberWithInt:0];
+            [stack replaceObjectAtIndex:i withObject:replacementValue];
+        }
+    }
     
     return [self popOperandOffProgramStack:stack];
 }
