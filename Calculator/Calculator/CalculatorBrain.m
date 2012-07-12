@@ -213,6 +213,10 @@
     return [self runProgram:program usingVariables:[NSDictionary dictionary]]; 
 }
 
+- (void)removeTopItemFromStack {
+    if (self.programStack.count) [self.programStack removeLastObject];
+}
+
 - (void)clearMemory {
     [self.programStack removeAllObjects];
 }

@@ -131,6 +131,21 @@
     [self updateDisplays];
 }
 
+- (IBAction)undoPressed {
+    if (self.userIsInTheMiddleOfEnteringANumber) {
+        int newDisplayLength = [self.display.text length] - 1;
+        self.display.text = [self.display.text substringToIndex:newDisplayLength];
+        if (newDisplayLength == 0) {
+            self.userIsInTheMiddleOfEnteringANumber = FALSE;
+            [self updateDisplays];
+        }
+    } else {
+        [self.brain removeTopItemFromStack];
+        [self updateDisplays];
+    }
+ 
+}
+
 - (void)viewDidUnload {
     [self setSentToTheBrain:nil];
     [self setVariableValueDisplay:nil];
