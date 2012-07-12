@@ -36,6 +36,27 @@
     return _testVariableValues;
 }
 
+- (void)updateVariableValueDisplay {
+    self.variableValueDisplay.text = @""; //clear anything already in there
+    for (NSString *currentVar in [CalculatorBrain variablesUsedInProgram:self.brain.program]) {
+        NSString *currentValue = [[self.testVariableValues valueForKey:currentVar] stringValue];
+        if (!currentValue) currentValue = @"0";
+        self.variableValueDisplay.text = [self.variableValueDisplay.text stringByAppendingFormat:@"%@ = %@ ",currentVar,currentValue];
+    }
+}
+
+- (void)updateDisplays {
+    //show the description of the program up top
+    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
+    
+    //show the result of running the program
+    double programResult = [CalculatorBrain runProgram:self.brain.program usingVariables:self.testVariableValues];
+    self.display.text = [NSString stringWithFormat:@"%g", programResult];
+    
+    //show the value of variables at the bottom of the display
+    [self updateVariableValueDisplay];
+}
+
 - (IBAction)digitPressed:(UIButton *)sender {
     NSString *digit = [sender currentTitle];
     if (self.userIsInTheMiddleOfEnteringANumber) {
@@ -49,24 +70,14 @@
         self.userIsInTheMiddleOfEnteringANumber = YES;
     }
     
-    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
+    //self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
 }
 
 - (IBAction)enterPressed {    
     [self.brain pushOperand:[self.display.text doubleValue]];
     self.userIsInTheMiddleOfEnteringANumber = NO;
     
-    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
-
-}
-
-- (void)updateVariableValueDisplay {
-    self.variableValueDisplay.text = @""; //clear anything already in there
-    for (NSString *currentVar in [CalculatorBrain variablesUsedInProgram:self.brain.program]) {
-        NSString *currentValue = [[self.testVariableValues valueForKey:currentVar] stringValue];
-        if (!currentValue) currentValue = @"0";
-        self.variableValueDisplay.text = [self.variableValueDisplay.text stringByAppendingFormat:@"%@ = %@ ",currentVar,currentValue];
-    }
+    [self updateDisplays];
 }
 
 - (IBAction)operationPressed:(UIButton *)sender {
@@ -77,13 +88,7 @@
     //push operation
     [self.brain performOperation:sender.currentTitle];
     
-    //update display, including current variable values
-    self.display.text = [NSString stringWithFormat:@"%g", [CalculatorBrain runProgram:self.brain.program usingVariables:self.testVariableValues]];
-    
-    //update the display that shows what was sent to the brain
-    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
-    
-    [self updateVariableValueDisplay];
+    [self updateDisplays];
 }
 
 - (IBAction)variablePressed:(UIButton *)sender {
@@ -92,15 +97,38 @@
     }
     
     [self.brain pushVariable:sender.currentTitle];
-    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
+    
+    [self updateDisplays];
 }
 
+- (IBAction)testNilPressed {
+    self.testVariableValues=nil;
+    [self updateDisplays];
+}
+
+- (IBAction)testSomePressed {
+    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithInt:3], @"x", 
+                              [NSNumber numberWithDouble:-1.75], @"a", nil];
+    self.testVariableValues=testDict;
+    [self updateDisplays];
+}
+
+- (IBAction)testAllPressed {
+    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                              [NSNumber numberWithDouble:598.896], @"x", 
+                              [NSNumber numberWithInt:-4], @"a",
+                              [NSNumber numberWithInt:0], @"b", nil];
+    self.testVariableValues=testDict;
+    [self updateDisplays];
+
+}
 
 - (IBAction)clearPressed {
-    self.sentToTheBrain.text = @"";
-    self.display.text = @"0";
     self.userIsInTheMiddleOfEnteringANumber = NO;
+    self.testVariableValues = nil;
     [self.brain clearMemory];
+    [self updateDisplays];
 }
 
 - (void)viewDidUnload {
