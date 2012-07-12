@@ -45,8 +45,45 @@
             [self isNoOperandOperation:operation];
 }
 
+
++ (NSString *)descriptionOfTopOfStack: (NSMutableArray *) stack {
+    NSString *result = @"";
+    
+    id topOfStack = [stack lastObject];
+    if (topOfStack) [stack removeLastObject];
+    
+    if ([topOfStack isKindOfClass:[NSNumber class]]) {
+        result = [topOfStack stringValue];
+    } else if ([topOfStack isKindOfClass:[NSString class]]) {
+        NSString *operation = topOfStack;
+        if ([self isTwoOperandOperation:operation]) {
+            NSString *secondOperand = [self descriptionOfTopOfStack:stack];
+            NSString *firstOperand = [self descriptionOfTopOfStack:stack];
+            result = [result stringByAppendingFormat:@"(%@ %@ %@)",firstOperand,operation,secondOperand];
+        } else if ([self isOneOperandOperation:operation]) {
+            result = [result stringByAppendingFormat:@"%@(%@)",operation,[self descriptionOfTopOfStack:stack]];
+        } else { 
+            //must be a no operation op or var
+            result = operation;
+        }
+    }
+    
+    return result;
+    
+}
+
 + (NSString *)descriptionOfProgram:(id)program {
-    return @"Implement this in Homework #2";
+    NSMutableArray *stack;
+    if ([program isKindOfClass:[NSArray class]]) {
+        stack = [program mutableCopy];
+    }
+    
+    NSString *description = [self descriptionOfTopOfStack:stack];
+    //more stuff still left on the stack, add comma and eval again.
+    while (stack.count) {
+        description = [description stringByAppendingFormat:@", %@",[self descriptionOfTopOfStack:stack]];
+    }
+    return description;
 }
 
 

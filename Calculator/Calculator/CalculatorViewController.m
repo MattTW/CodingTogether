@@ -40,16 +40,16 @@
         self.display.text = digit;
         self.userIsInTheMiddleOfEnteringANumber = YES;
     }
+    
+    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
 }
 
-- (IBAction)enterPressed {
-    //put space after number tat is about to be sent to the brain, then add that to our label
-    //that shows what was send to the brain
-    NSString *toBrainString = [self.display.text stringByAppendingString:@" "];
-    self.sentToTheBrain.text = [self.sentToTheBrain.text stringByAppendingString:toBrainString];
-    
+- (IBAction)enterPressed {    
     [self.brain pushOperand:[self.display.text doubleValue]];
     self.userIsInTheMiddleOfEnteringANumber = NO;
+    
+    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
+
 }
 
 - (IBAction)operationPressed:(UIButton *)sender {
@@ -57,13 +57,10 @@
         [self enterPressed];
     }
     
-    //capture the operation pressed as a string, put a space after it, then show it in our label that shows
-    //what operation the brain was asked to perform.
-    NSString *operandString = [sender.currentTitle stringByAppendingString:@" "];
-    self.sentToTheBrain.text = [self.sentToTheBrain.text stringByAppendingString:operandString];
-    
     double result = [self.brain performOperation:sender.currentTitle];
     self.display.text = [NSString stringWithFormat:@"%g", result];
+    
+    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
 }
 
 
