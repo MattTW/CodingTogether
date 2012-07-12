@@ -45,8 +45,13 @@
             [self isNoOperandOperation:operation];
 }
 
++ (int)operatorPrecedenceOf:(NSString *)operation {
+    if ([operation isEqualToString:@"*"] || [operation isEqualToString:@"/"]) return 2;
+    else if ([operation isEqualToString:@"+"] || [operation isEqualToString:@"1"]) return 1;
+    else return 0;
+}
 
-+ (NSString *)descriptionOfTopOfStack: (NSMutableArray *) stack {
++ (NSString *)descriptionOfTopOfStack: (NSMutableArray *)stack withLastOperatorPrecedenceOf:(int)lastOpPrecedence {
     NSString *result = @"";
     
     id topOfStack = [stack lastObject];
@@ -56,12 +61,18 @@
         result = [topOfStack stringValue];
     } else if ([topOfStack isKindOfClass:[NSString class]]) {
         NSString *operation = topOfStack;
+        int currentOperatorPrecedence = [self operatorPrecedenceOf:operation];
         if ([self isTwoOperandOperation:operation]) {
-            NSString *secondOperand = [self descriptionOfTopOfStack:stack];
-            NSString *firstOperand = [self descriptionOfTopOfStack:stack];
-            result = [result stringByAppendingFormat:@"(%@ %@ %@)",firstOperand,operation,secondOperand];
+            NSString *secondOperand = [self descriptionOfTopOfStack:stack withLastOperatorPrecedenceOf:currentOperatorPrecedence];
+            NSString *firstOperand = [self descriptionOfTopOfStack:stack withLastOperatorPrecedenceOf:currentOperatorPrecedence];
+            if (currentOperatorPrecedence < lastOpPrecedence) {
+                result = [result stringByAppendingFormat:@"(%@ %@ %@)",firstOperand,operation,secondOperand];
+            } else {
+                result = [result stringByAppendingFormat:@"%@ %@ %@",firstOperand,operation,secondOperand];
+                
+            }
         } else if ([self isOneOperandOperation:operation]) {
-            result = [result stringByAppendingFormat:@"%@(%@)",operation,[self descriptionOfTopOfStack:stack]];
+            result = [result stringByAppendingFormat:@"%@(%@)",operation,[self descriptionOfTopOfStack:stack withLastOperatorPrecedenceOf:currentOperatorPrecedence]];
         } else { 
             //must be a no operation op or var
             result = operation;
@@ -78,10 +89,10 @@
         stack = [program mutableCopy];
     }
     
-    NSString *description = [self descriptionOfTopOfStack:stack];
+    NSString *description = [self descriptionOfTopOfStack:stack withLastOperatorPrecedenceOf:0];
     //more stuff still left on the stack, add comma and eval again.
     while (stack.count) {
-        description = [description stringByAppendingFormat:@", %@",[self descriptionOfTopOfStack:stack]];
+        description = [description stringByAppendingFormat:@", %@",[self descriptionOfTopOfStack:stack withLastOperatorPrecedenceOf:0]];
     }
     return description;
 }
@@ -167,7 +178,7 @@
     //iterate through array - 
     //so add it to the set we will return
     for (id current in stack) {
-        if ([self isVariable:current]) {        
+        if ([self isVariable:current]) {
             if (!variables) variables = [NSMutableSet set];  //create set if still nil
             [variables addObject:current];
         }

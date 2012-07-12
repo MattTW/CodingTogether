@@ -13,6 +13,7 @@
 
 @property (nonatomic) BOOL userIsInTheMiddleOfEnteringANumber;
 @property (nonatomic,strong) CalculatorBrain *brain;
+@property (nonatomic,strong) NSDictionary *testVariableValues;
 
 @end
 
@@ -20,12 +21,19 @@
 
 @synthesize display = _display;
 @synthesize sentToTheBrain = _sentToTheBrain;
+@synthesize variableValueDisplay = _variableValueDisplay;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
 @synthesize brain = _brain;
+@synthesize testVariableValues = _testVariableValues;
 
 - (CalculatorBrain *)brain {
     if (!_brain) _brain = [[CalculatorBrain alloc] init];
     return _brain;
+}
+
+- (NSDictionary *)testVariableValues {
+    if (!_testVariableValues) _testVariableValues = [[NSDictionary alloc] init];
+    return _testVariableValues;
 }
 
 - (IBAction)digitPressed:(UIButton *)sender {
@@ -52,14 +60,38 @@
 
 }
 
+- (void)updateVariableValueDisplay {
+    self.variableValueDisplay.text = @""; //clear anything already in there
+    for (NSString *currentVar in [CalculatorBrain variablesUsedInProgram:self.brain.program]) {
+        NSString *currentValue = [[self.testVariableValues valueForKey:currentVar] stringValue];
+        if (!currentValue) currentValue = @"0";
+        self.variableValueDisplay.text = [self.variableValueDisplay.text stringByAppendingFormat:@"%@ = %@ ",currentVar,currentValue];
+    }
+}
+
 - (IBAction)operationPressed:(UIButton *)sender {
     if (self.userIsInTheMiddleOfEnteringANumber) {
         [self enterPressed];
     }
     
-    double result = [self.brain performOperation:sender.currentTitle];
-    self.display.text = [NSString stringWithFormat:@"%g", result];
+    //push operation
+    [self.brain performOperation:sender.currentTitle];
     
+    //update display, including current variable values
+    self.display.text = [NSString stringWithFormat:@"%g", [CalculatorBrain runProgram:self.brain.program usingVariables:self.testVariableValues]];
+    
+    //update the display that shows what was sent to the brain
+    self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
+    
+    [self updateVariableValueDisplay];
+}
+
+- (IBAction)variablePressed:(UIButton *)sender {
+    if (self.userIsInTheMiddleOfEnteringANumber) {
+        [self enterPressed];
+    }
+    
+    [self.brain pushVariable:sender.currentTitle];
     self.sentToTheBrain.text = [CalculatorBrain descriptionOfProgram:self.brain.program];
 }
 
@@ -73,6 +105,7 @@
 
 - (void)viewDidUnload {
     [self setSentToTheBrain:nil];
+    [self setVariableValueDisplay:nil];
     [super viewDidUnload];
 }
 @end
