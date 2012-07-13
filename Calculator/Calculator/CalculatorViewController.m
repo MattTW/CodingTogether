@@ -21,7 +21,7 @@
 
 @synthesize display = _display;
 @synthesize sentToTheBrain = _sentToTheBrain;
-@synthesize variableValueDisplay = _variableValueDisplay;
+//@synthesize variableValueDisplay = _variableValueDisplay;
 @synthesize userIsInTheMiddleOfEnteringANumber = _userIsInTheMiddleOfEnteringANumber;
 @synthesize brain = _brain;
 @synthesize testVariableValues = _testVariableValues;
@@ -36,14 +36,14 @@
     return _testVariableValues;
 }
 
-- (void)updateVariableValueDisplay {
-    self.variableValueDisplay.text = @""; //clear anything already in there
-    for (NSString *currentVar in [CalculatorBrain variablesUsedInProgram:self.brain.program]) {
-        NSString *currentValue = [[self.testVariableValues valueForKey:currentVar] stringValue];
-        if (!currentValue) currentValue = @"0";
-        self.variableValueDisplay.text = [self.variableValueDisplay.text stringByAppendingFormat:@"%@ = %@ ",currentVar,currentValue];
-    }
-}
+//- (void)updateVariableValueDisplay {
+//    //self.variableValueDisplay.text = @""; //clear anything already in there
+//    for (NSString *currentVar in [CalculatorBrain variablesUsedInProgram:self.brain.program]) {
+//        NSString *currentValue = [[self.testVariableValues valueForKey:currentVar] stringValue];
+//        if (!currentValue) currentValue = @"0";
+//        self.variableValueDisplay.text = [self.variableValueDisplay.text stringByAppendingFormat:@"%@ = %@ ",currentVar,currentValue];
+//    }
+//}
 
 - (void)updateDisplays {
     //show the description of the program up top
@@ -54,7 +54,7 @@
     self.display.text = [NSString stringWithFormat:@"%g", programResult];
     
     //show the value of variables at the bottom of the display
-    [self updateVariableValueDisplay];
+    //[self updateVariableValueDisplay];
 }
 
 - (IBAction)digitPressed:(UIButton *)sender {
@@ -101,28 +101,28 @@
     [self updateDisplays];
 }
 
-- (IBAction)testNilPressed {
-    self.testVariableValues=nil;
-    [self updateDisplays];
-}
-
-- (IBAction)testSomePressed {
-    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithInt:3], @"x", 
-                              [NSNumber numberWithDouble:-1.75], @"a", nil];
-    self.testVariableValues=testDict;
-    [self updateDisplays];
-}
-
-- (IBAction)testAllPressed {
-    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              [NSNumber numberWithDouble:598.896], @"x", 
-                              [NSNumber numberWithInt:-4], @"a",
-                              [NSNumber numberWithInt:0], @"b", nil];
-    self.testVariableValues=testDict;
-    [self updateDisplays];
-
-}
+//- (IBAction)testNilPressed {
+//    self.testVariableValues=nil;
+//    [self updateDisplays];
+//}
+//
+//- (IBAction)testSomePressed {
+//    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//                              [NSNumber numberWithInt:3], @"x", 
+//                              [NSNumber numberWithDouble:-1.75], @"a", nil];
+//    self.testVariableValues=testDict;
+//    [self updateDisplays];
+//}
+//
+//- (IBAction)testAllPressed {
+//    NSDictionary *testDict = [NSDictionary dictionaryWithObjectsAndKeys:
+//                              [NSNumber numberWithDouble:598.896], @"x", 
+//                              [NSNumber numberWithInt:-4], @"a",
+//                              [NSNumber numberWithInt:0], @"b", nil];
+//    self.testVariableValues=testDict;
+//    [self updateDisplays];
+//
+//}
 
 - (IBAction)clearPressed {
     self.userIsInTheMiddleOfEnteringANumber = NO;
@@ -148,7 +148,7 @@
 
 - (void)viewDidUnload {
     [self setSentToTheBrain:nil];
-    [self setVariableValueDisplay:nil];
+    //[self setVariableValueDisplay:nil];
     [super viewDidUnload];
 }
 @end
