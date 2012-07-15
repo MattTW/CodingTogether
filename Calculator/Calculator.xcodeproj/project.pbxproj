@@ -18,6 +18,7 @@
 		C95A070C15A9F71800A8CB4D /* CalculatorBrain.m in Sources */ = {isa = PBXBuildFile; fileRef = C95A070B15A9F71800A8CB4D /* CalculatorBrain.m */; };
 		C99E211A15B353A50083AEC4 /* GraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = C99E211915B353A50083AEC4 /* GraphView.m */; };
 		C99E211D15B353E60083AEC4 /* GraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C99E211C15B353E60083AEC4 /* GraphViewController.m */; };
+		C99E212615B3638E0083AEC4 /* AxesDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = C99E212415B3638E0083AEC4 /* AxesDrawer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,8 @@
 		C99E211915B353A50083AEC4 /* GraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphView.m; sourceTree = "<group>"; };
 		C99E211B15B353E60083AEC4 /* GraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphViewController.h; sourceTree = "<group>"; };
 		C99E211C15B353E60083AEC4 /* GraphViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphViewController.m; sourceTree = "<group>"; };
+		C99E212415B3638E0083AEC4 /* AxesDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AxesDrawer.m; sourceTree = "<group>"; };
+		C99E212515B3638E0083AEC4 /* AxesDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AxesDrawer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +89,8 @@
 		C95A06F315A9D36700A8CB4D /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
+				C99E212415B3638E0083AEC4 /* AxesDrawer.m */,
+				C99E212515B3638E0083AEC4 /* AxesDrawer.h */,
 				C99E211815B353A50083AEC4 /* GraphView.h */,
 				C99E211915B353A50083AEC4 /* GraphView.m */,
 				C95A070A15A9F71800A8CB4D /* CalculatorBrain.h */,
@@ -182,6 +187,7 @@
 				C95A070C15A9F71800A8CB4D /* CalculatorBrain.m in Sources */,
 				C99E211A15B353A50083AEC4 /* GraphView.m in Sources */,
 				C99E211D15B353E60083AEC4 /* GraphViewController.m in Sources */,
+				C99E212615B3638E0083AEC4 /* AxesDrawer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

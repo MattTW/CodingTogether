@@ -386,7 +386,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="ULm-vG-M6y" kind="push" identifier="ShowGraph" id="KDP-v4-le0"/>
+                                    <segue destination="Whm-dF-sgj" kind="push" identifier="ShowGraph" id="E3E-tA-JlV"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -402,23 +402,37 @@
             <point key="canvasLocation" x="221" y="89"/>
         </scene>
         <!--Graph View Controller - Graph-->
-        <scene sceneID="Hwl-lC-RzO">
+        <scene sceneID="Nhu-m8-9Wc">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dzE-gb-ojY" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="ULm-vG-M6y" customClass="GraphViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="G0n-ZZ-BLF" customClass="GraphView">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mx0-Sq-aRC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <viewController id="Whm-dF-sgj" customClass="GraphViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="zrf-hR-ZSA">
                         <rect key="frame" x="0.0" y="64" width="320" height="416"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="fW7-aP-pPD" customClass="GraphView">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="389"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Program:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" id="kfi-Kf-eXS">
+                                <rect key="frame" x="20" y="395" width="207" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Graph" id="vNG-pB-LSE"/>
+                    <navigationItem key="navigationItem" title="Graph" id="jJq-ph-rU4"/>
                     <connections>
-                        <outlet property="graph" destination="G0n-ZZ-BLF" id="5IJ-GS-smH"/>
-                        <outlet property="view" destination="G0n-ZZ-BLF" id="ghD-HI-gAy"/>
+                        <outlet property="graphView" destination="fW7-aP-pPD" id="Z4Y-2e-xEo"/>
+                        <outlet property="programDisplay" destination="kfi-Kf-eXS" id="R1N-g5-uhd"/>
                     </connections>
                 </viewController>
             </objects>
-            <point key="canvasLocation" x="610" y="92"/>
+            <point key="canvasLocation" x="608" y="94"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="H9C-41-tMi">
@@ -439,24 +453,6 @@
             <point key="canvasLocation" x="-251" y="89"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CalculatorViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CalculatorViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="display" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="sentToTheBrain" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="GraphView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphView.h"/>
-        </class>
-        <class className="GraphViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/GraphViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="graph" candidateClass="GraphView"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

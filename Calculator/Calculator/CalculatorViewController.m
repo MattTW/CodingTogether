@@ -8,6 +8,7 @@
 
 #import "CalculatorViewController.h"
 #import "CalculatorBrain.h"
+#import "GraphViewController.h" //needed to send message in segue
 
 @interface CalculatorViewController()
 
@@ -33,6 +34,13 @@
 - (NSDictionary *)testVariableValues {
     if (!_testVariableValues) _testVariableValues = [[NSDictionary alloc] init];
     return _testVariableValues;
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"ShowGraph"]) {
+        [segue.destinationViewController setProgram:self.brain.program];
+    }
 }
 
 
