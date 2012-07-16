@@ -9,7 +9,7 @@
 #import "GraphViewController.h"
 #import "CalculatorBrain.h"
 
-@interface GraphViewController ()
+@interface GraphViewController() <GraphViewDataSource> 
 
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
 @property (weak, nonatomic) IBOutlet UILabel *programDisplay;
@@ -32,6 +32,11 @@
     
 }
 
+-(void)setGraphView:(GraphView *)graphView {
+    _graphView = graphView;
+    self.graphView.dataSource = self;
+}
+
 -(void)updateDisplay {
     self.programDisplay.text = [CalculatorBrain descriptionOfProgram:self.program];
     //TODO tell the view to redraw its graph for the new program
@@ -39,6 +44,15 @@
     //tell view to refresh its display
     [self.graphView setNeedsDisplay];
 
+}
+
+-(double) graphView:(GraphView *)sender yAxisValueForX:(double)x {    
+    //ask calculator brain to run the program using the given x value
+    NSNumber *xNumber = [NSNumber numberWithDouble:x];
+    NSDictionary *dictionaryWithX = [NSDictionary dictionaryWithObject:xNumber forKey: @"x"];
+    double result = [CalculatorBrain runProgram:self.program usingVariables:dictionaryWithX];
+    //NSLog(@"When x=%g, I think y should be %g", x, result);
+    return result;
 }
 
 //once view is fully loaded, initialize display

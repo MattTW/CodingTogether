@@ -89,8 +89,8 @@
 		C95A06F315A9D36700A8CB4D /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
-				C99E212415B3638E0083AEC4 /* AxesDrawer.m */,
 				C99E212515B3638E0083AEC4 /* AxesDrawer.h */,
+				C99E212415B3638E0083AEC4 /* AxesDrawer.m */,
 				C99E211815B353A50083AEC4 /* GraphView.h */,
 				C99E211915B353A50083AEC4 /* GraphView.m */,
 				C95A070A15A9F71800A8CB4D /* CalculatorBrain.h */,
