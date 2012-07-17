@@ -80,26 +80,27 @@
     CGContextSetLineWidth(context, 2.0);
     [[UIColor redColor] setStroke];
 
-    //in the rect we are asked to redraw, go through each x pixel and
-    //find the corresponding y pixel to graph
-    int startXPoint = rect.origin.x;
-    int endXPoint = rect.origin.x + rect.size.width;
-    for (int currentXPoint = startXPoint; currentXPoint <= endXPoint; currentXPoint++) {
-        //convert our X pixel to x graph value
+    //rect is given in points
+    CGFloat startXPoint = rect.origin.x;
+    CGFloat endXPoint = (rect.origin.x + rect.size.width);
+    //set our increment to be one pixel by figuring out how many points are in a pixel
+    //it is okay for points to be fractional, system will map back to best pixel match.
+    CGFloat incrementValue = 1/self.contentScaleFactor;
+    //go through each x pixel and calc y 
+    for (CGFloat currentXPoint = startXPoint; currentXPoint <= endXPoint; currentXPoint = currentXPoint+incrementValue) {
+        //convert our X pixel to graph value
         double currentXUnit = (currentXPoint - self.origin.x)/self.scale;
         
-        //ask our datasource for the corresponding x unit
+        //ask our datasource for the corresponding y graph value
         double currentYUnit = [self.dataSource graphView:self yAxisValueForX:currentXUnit];
         
-        //convert returned Y value back to pixels
-        int currentYPoint = self.origin.y - (currentYUnit * self.scale);
+        //convert returned Y value back to points
+        CGFloat currentYPoint = self.origin.y - (currentYUnit * self.scale);
         
-        //NSLog(@"Gonna draw a line from last point to x:%i y:%i",currentXPoint,currentYPoint);
-        //now draw it
         if (currentXPoint != startXPoint) { 
             CGContextAddLineToPoint(context, currentXPoint, currentYPoint);
         } else {
-            CGContextMoveToPoint(context, currentXPoint, currentYPoint);
+            CGContextMoveToPoint(context, currentXPoint,currentYPoint);
         }
 
     }
