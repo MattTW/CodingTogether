@@ -73,6 +73,7 @@
     
    [AxesDrawer drawAxesInRect:rect originAtPoint:self.origin scale:self.scale];
 
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     UIGraphicsPushContext(context);
     
@@ -81,28 +82,58 @@
 
     //in the rect we are asked to redraw, go through each x pixel and
     //find the corresponding y pixel to graph
-    int startXPixel = rect.origin.x;
-    int endXPixel = rect.origin.x + rect.size.width;
-    for (int currentXPixel = startXPixel; currentXPixel < endXPixel; currentXPixel++) {
+    int startXPoint = rect.origin.x;
+    int endXPoint = rect.origin.x + rect.size.width;
+    for (int currentXPoint = startXPoint; currentXPoint <= endXPoint; currentXPoint++) {
         //convert our X pixel to x graph value
-        double currentXUnit = (currentXPixel - self.origin.x)/self.scale;
+        double currentXUnit = (currentXPoint - self.origin.x)/self.scale;
+        
         //ask our datasource for the corresponding x unit
         double currentYUnit = [self.dataSource graphView:self yAxisValueForX:currentXUnit];
+        
         //convert returned Y value back to pixels
-        int currentYPixel = self.origin.y - (currentYUnit * self.scale);
-        //NSLog(@"Gonna draw a line from last point to x:%i y:%i",currentXPixel,currentYPixel);
+        int currentYPoint = self.origin.y - (currentYUnit * self.scale);
+        
+        //NSLog(@"Gonna draw a line from last point to x:%i y:%i",currentXPoint,currentYPoint);
         //now draw it
-        //no line to draw when starting with first point
-        if (currentXPixel != startXPixel) {
-            CGContextAddLineToPoint(context, currentXPixel, currentYPixel);
-            CGContextStrokePath(context);
+        if (currentXPoint != startXPoint) { 
+            CGContextAddLineToPoint(context, currentXPoint, currentYPoint);
+        } else {
+            CGContextMoveToPoint(context, currentXPoint, currentYPoint);
         }
-        CGContextMoveToPoint(context, currentXPixel, currentYPixel);        
+
     }
+    CGContextStrokePath(context);
     
     UIGraphicsPopContext();
 
 }
 
+
+- (void)pan:(UIPanGestureRecognizer *)gesture
+{
+    if ((gesture.state == UIGestureRecognizerStateChanged) ||
+        (gesture.state == UIGestureRecognizerStateEnded)) {
+        CGPoint translation = [gesture translationInView:self];
+        self.origin = CGPointMake(self.origin.x + translation.x, self.origin.y + translation.y);
+        [gesture setTranslation:CGPointZero inView:self];
+    }
+}
+
+- (void)pinch:(UIPinchGestureRecognizer *)gesture
+{
+    if ((gesture.state == UIGestureRecognizerStateChanged) ||
+        (gesture.state == UIGestureRecognizerStateEnded)) {
+        self.scale *= gesture.scale; // adjust our scale
+        gesture.scale = 1;           // reset gestures scale to 1 (so future changes are incremental, not cumulative)
+    }
+}
+
+- (void)tapNewOrigin:(UITapGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        self.origin = [gesture locationInView:self];
+    }
+}
 
 @end
