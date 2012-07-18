@@ -36,13 +36,36 @@
     return _testVariableValues;
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+
+//return GraphView that is the detail of a split view, if not in split
+//view, just return nil;
+- (GraphViewController *)splitViewGraphViewController
 {
-    if ([segue.identifier isEqualToString:@"ShowGraph"]) {
-        [segue.destinationViewController setProgram:self.brain.program];
+    id gvc = [self.splitViewController.viewControllers lastObject];
+    if (![gvc isKindOfClass:[GraphViewController class]]) {
+        gvc = nil;
     }
+    return gvc;
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+        if ([segue.identifier isEqualToString:@"ShowGraph"]) {
+            [segue.destinationViewController setProgram:self.brain.program];
+        }
+}
+
+- (IBAction)graphPressed {
+    if ([self splitViewGraphViewController]) {
+        //in split view with graph, just give the graph its program
+        //that setter will also update the graph
+        [self splitViewGraphViewController].program = self.brain.program;
+        
+    }
+    
+    //iphone storyboard directly targets segue from graph button
+    //without using target action.
+}
 
 - (void)updateDisplays {
     //show the description of the program up top
@@ -118,6 +141,15 @@
         [self updateDisplays];
     }
  
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (self.splitViewController) { //in split view?  
+        return YES;
+    } else {
+        return UIInterfaceOrientationIsPortrait(interfaceOrientation);
+    }
 }
 
 - (void)viewDidUnload {

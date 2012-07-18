@@ -44,7 +44,6 @@
 
 -(void)updateDisplay {
     self.programDisplay.text = [CalculatorBrain descriptionOfProgram:self.program];
-    //TODO tell the view to redraw its graph for the new program
     
     //tell view to refresh its display
     [self.graphView setNeedsDisplay];
@@ -67,7 +66,11 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+    if (self.splitViewController) { //in split view?  
+        return YES;
+    } else {
+        return UIInterfaceOrientationIsPortrait(interfaceOrientation);
+    }
 }
 
 - (void)viewDidUnload {
