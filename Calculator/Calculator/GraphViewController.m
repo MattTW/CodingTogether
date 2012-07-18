@@ -9,25 +9,30 @@
 #import "GraphViewController.h"
 #import "CalculatorBrain.h"
 
-@interface GraphViewController() <GraphViewDataSource> 
+@interface GraphViewController() <GraphViewDataSource, UISplitViewControllerDelegate> 
 
 @property (weak, nonatomic) IBOutlet GraphView *graphView;
-@property (weak, nonatomic) IBOutlet UILabel *programDisplay;
+@property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (nonatomic, strong) UIBarButtonItem *splitViewBarButtonItem;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *programDescriptionDisplay;
 
 @end
 
 @implementation GraphViewController
 @synthesize graphView = _graphView;
-@synthesize programDisplay = _programDisplay;
+@synthesize toolbar = _toolbar;
+@synthesize splitViewBarButtonItem = _splitViewBarButtonItem;
+@synthesize programDescriptionDisplay = _programDescriptionDisplay;
 @synthesize program = _program;
 
 //when program is set, update the program display in the view, then graph it
 -(void)setProgram:(id)program {
     _program = program;
     
-    //when called during segue, programDisplay/view not initialized yet so view stuff
-    //is nill and will fail silently.  ViewDidLoad will update display.
-    //but if this set is called after segue, this update will work.
+    //if during segue, programDisplay/view not initialized
+    //view stuff is nill so updateDisplay will do nothing
+    //ViewDidLoad will update display in this case.
+    //If this set is called after segue, this update will work.
     [self updateDisplay];
     
 }
@@ -42,8 +47,49 @@
     self.graphView.dataSource = self;
 }
 
+- (void)setSplitViewBarButtonItem:(UIBarButtonItem *)splitViewBarButtonItem
+{
+    if (splitViewBarButtonItem != _splitViewBarButtonItem) {
+        NSMutableArray *toolbarItems = [self.toolbar.items mutableCopy];
+        if (_splitViewBarButtonItem) [toolbarItems removeObject:_splitViewBarButtonItem];
+        if (splitViewBarButtonItem) [toolbarItems insertObject:splitViewBarButtonItem atIndex:0];
+        self.toolbar.items = toolbarItems;
+        _splitViewBarButtonItem = splitViewBarButtonItem;
+    }
+}
+
+- (BOOL)splitViewController:(UISplitViewController *)svc
+   shouldHideViewController:(UIViewController *)vc
+              inOrientation:(UIInterfaceOrientation)orientation
+{
+    return UIInterfaceOrientationIsPortrait(orientation);
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willHideViewController:(UIViewController *)aViewController
+          withBarButtonItem:(UIBarButtonItem *)barButtonItem
+       forPopoverController:(UIPopoverController *)pc
+{
+    barButtonItem.title = aViewController.title;
+    self.splitViewBarButtonItem = barButtonItem;
+}
+
+- (void)splitViewController:(UISplitViewController *)svc
+     willShowViewController:(UIViewController *)aViewController
+  invalidatingBarButtonItem:(UIBarButtonItem *)barButtonItem
+{
+    self.splitViewBarButtonItem = nil;
+}
+
 -(void)updateDisplay {
-    self.programDisplay.text = [CalculatorBrain descriptionOfProgram:self.program];
+    NSString *programDesc = [CalculatorBrain descriptionOfProgram:self.program];
+    if (self.splitViewController) {
+        self.programDescriptionDisplay.title = programDesc;
+    } else if (self.navigationController) {
+        self.title = programDesc;
+    }//technically we need another place to display prog
+      //desc if not inside a nav or split controller, not doing that
+      //for assignment.
     
     //tell view to refresh its display
     [self.graphView setNeedsDisplay];
@@ -61,6 +107,9 @@
 
 //once view is fully loaded, initialize display
 -(void)viewDidLoad {
+    if (self.splitViewController) {
+        self.splitViewController.delegate = self;
+    }
     [self updateDisplay];
 }
 
@@ -74,8 +123,9 @@
 }
 
 - (void)viewDidUnload {
-    [self setProgramDisplay:nil];
     [self setGraphView:nil];
+    [self setToolbar:nil];
+    [self setProgramDescriptionDisplay:nil];
     [super viewDidUnload];
 }
 @end
