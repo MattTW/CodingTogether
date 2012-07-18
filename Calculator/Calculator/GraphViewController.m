@@ -122,6 +122,23 @@
     }
 }
 
+
+- (void)viewWillAppear:(BOOL)animated {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.graphView.scale = [defaults floatForKey:@"graphScale"];
+    CGFloat x = [defaults floatForKey:@"graphOriginX"];
+    CGFloat y = [defaults floatForKey:@"graphOriginY"];
+    self.graphView.origin = CGPointMake(x, y);
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setFloat:self.graphView.scale forKey:@"graphScale"];
+    [defaults setFloat:self.graphView.origin.x forKey:@"graphOriginX"];
+    [defaults setFloat:self.graphView.origin.y forKey:@"graphOriginY"];
+    [defaults synchronize];
+}
+
 - (void)viewDidUnload {
     [self setGraphView:nil];
     [self setToolbar:nil];
