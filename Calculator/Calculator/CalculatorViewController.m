@@ -155,6 +155,7 @@
 
 - (void)viewDidUnload {
     [self setSentToTheBrain:nil];
+    [self setDisplay:nil];
     [super viewDidUnload];
 }
 @end

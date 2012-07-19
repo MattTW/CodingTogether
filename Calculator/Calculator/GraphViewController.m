@@ -107,6 +107,7 @@
 
 //once view is fully loaded, initialize display
 -(void)viewDidLoad {
+    [super viewDidLoad];
     if (self.splitViewController) {
         self.splitViewController.delegate = self;
     }
@@ -124,6 +125,7 @@
 
 
 - (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.graphView.scale = [defaults floatForKey:@"graphScale"];
     CGFloat x = [defaults floatForKey:@"graphOriginX"];
@@ -132,6 +134,7 @@
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setFloat:self.graphView.scale forKey:@"graphScale"];
     [defaults setFloat:self.graphView.origin.x forKey:@"graphOriginX"];
